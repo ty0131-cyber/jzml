@@ -145,19 +145,57 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--green);outline-
   background:linear-gradient(120deg,#3a3a46,#1c1c22)}
 .stbanner.green{background:linear-gradient(120deg,var(--green),var(--green-deep))}
 .stbanner .sub{font-size:12.5px;font-weight:400;opacity:.75;margin-top:4px}
-.tl{margin:0 14px;background:var(--card);border-radius:var(--radius);padding:18px 16px 8px}
-.tl h4{font-size:14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
-.tl h4 span{font-weight:400;color:var(--ink2);font-size:12px}
-.tli{display:flex;gap:14px;position:relative;padding-bottom:22px}
-.tli .dot{width:9px;height:9px;border-radius:50%;background:#d5d5de;margin-top:6px;flex:none;position:relative;z-index:2}
-.tli::before{content:"";position:absolute;left:4px;top:16px;bottom:-4px;width:1.5px;background:#e8e8ee}
-.tli:last-child::before{display:none}
-.tli.done .dot{background:var(--green)}
-.tli.now .dot{background:var(--cta2);box-shadow:0 0 0 4px rgba(255,43,74,.15)}
-.tli .tt{font-size:14px;color:#9a9aa3}
-.tli.done .tt,.tli.now .tt{color:var(--ink)}
-.tli.now .tt{font-weight:600}
-.tli .ts{font-size:11.5px;color:#b6b6bf;margin-top:2px;font-variant-numeric:tabular-nums}
+
+/* ---- 菜鸟风格物流时间线 ---- */
+.lt-wrap{background:var(--card);margin:0 14px;border-radius:var(--radius);overflow:hidden}
+/* 地图头 */
+.lt-map{position:relative;height:120px;flex:none;overflow:hidden;
+  background:radial-gradient(circle at 20% 30%, #dfe8ef 0 2px, transparent 3px),
+    linear-gradient(135deg,#eef3f7,#e4ebf1);}
+.lt-river{position:absolute;top:-20px;left:30%;width:100px;height:160px;
+  border-left:14px solid #cfe0ec;border-radius:50%;transform:rotate(18deg);opacity:.7;}
+.lt-road{position:absolute;background:#dbe2ea;height:1.5px;}
+.lt-road.r1{top:48px;left:0;width:100%;transform:rotate(-6deg);}
+.lt-road.r2{top:78px;left:0;width:100%;transform:rotate(4deg);}
+.lt-city{position:absolute;color:#9aa4b0;font-size:12px;font-weight:600;}
+.lt-city.c1{top:52px;left:44%;} .lt-city.c2{top:78px;left:12%;}
+
+/* 时间轴列表 */
+.lt-track{padding:18px 16px 0;position:relative;z-index:2;background:var(--card);
+  border-radius:12px 12px 0 0;margin-top:-8px;}
+.lt-step{position:relative;padding:0 0 18px 26px;}
+.lt-step::before{content:"";position:absolute;left:5px;top:14px;bottom:-2px;
+  border-left:1.5px dashed #dcdfe6;}
+.lt-step:last-child::before{display:none;}
+.lt-dot{position:absolute;left:0;top:4px;width:11px;height:11px;border-radius:50%;
+  background:#fff;border:1.5px solid #c4c9d2;}
+.lt-step.now .lt-dot{background:var(--cta2);border-color:var(--cta2);
+  box-shadow:0 0 0 3px rgba(255,43,74,.15);}
+.lt-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
+.lt-head .stat{font-size:15px;font-weight:700;color:var(--ink);}
+.lt-step.now .lt-head .stat{color:var(--cta2);}
+.lt-head .time{font-size:12.5px;color:var(--ink2);}
+.lt-step.now .lt-head .time{color:var(--cta2);}
+.lt-head.timeonly .time{font-size:13px;}
+.lt-desc{font-size:13.5px;color:#5f6672;line-height:1.5;margin-top:4px;}
+
+/* 签收回执卡片 */
+.lt-receipt{margin-top:10px;background:#f4f5f7;border-radius:12px;
+  display:flex;align-items:center;gap:10px;padding:12px 14px;}
+.lt-receipt .emoji{font-size:24px;}
+.lt-receipt .txt{flex:1;}
+.lt-receipt .t1{font-size:15px;font-weight:700;color:var(--ink);}
+.lt-receipt .t2{font-size:12px;color:#9aa0aa;margin-top:1px;}
+
+/* 折叠按钮 */
+.lt-collapse{color:#6b7280;font-size:13px;padding:2px 0 14px 26px;cursor:pointer;user-select:none;}
+
+/* 底部地址 */
+.lt-foot{border-top:1px solid #f0f0f0;padding:12px 16px 14px;display:flex;
+  align-items:center;gap:8px;}
+.lt-foot .loc{font-size:16px;}
+.lt-foot .addr{flex:1;font-size:13.5px;color:var(--ink);}
+.lt-foot .addr .small{color:#9aa0aa;font-size:11px;margin-top:1px;}
 .review{margin:12px 14px;background:var(--card);border-radius:var(--radius);padding:20px 18px;text-align:center}
 .review h3{font-size:16px;margin-bottom:6px}
 .review p{font-size:13px;color:var(--ink2);margin-bottom:16px}
