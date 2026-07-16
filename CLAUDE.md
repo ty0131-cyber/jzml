@@ -36,7 +36,7 @@ tests/          针对 domain 与 migrations 的单元测试
 
 1. localStorage key 永远是 `jzml_v1`,不得更改
 2. 订单对象已有字段(id/name/price/qty/shop/link/t0/m/courier/trackingNo/hub1/hub2/verdict
-   /payMethod/shipFrom)的名称与含义不得修改,只允许新增字段;
+   /payMethod/shipFrom/destAddr/station/courierStaff)的名称与含义不得修改,只允许新增字段;
    settings 字段:name/phone/addr/demo/balance/payMethods
 3. 任何数据结构变更必须:`CURRENT_SCHEMA` +1,在 migrations.js 新增迁移函数,并补测试
 4. IndexedDB 库名 `jzml`、store 名 `imgs`、以订单 id 为 key,不得更改
