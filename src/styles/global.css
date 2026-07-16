@@ -232,3 +232,29 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--green);outline-
 .mini{padding:6px 16px;border-radius:99px;background:#f4f4f7;font-size:13px}
 .mini.danger{color:var(--price)}
 .sub.od{color:var(--price);font-weight:600}
+
+/* ---------- 支付过渡屏 ---------- */
+.opening-mask{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:55;display:flex;align-items:center;justify-content:center}
+.opening-card{background:#fff;border-radius:16px;padding:36px 32px 30px;text-align:center;min-width:220px;
+  animation:up .25s cubic-bezier(.2,.8,.3,1)}
+.opening-icon{font-size:40px;margin-bottom:12px}
+.opening-text{font-size:14px;color:var(--ink2);margin-bottom:16px}
+.opening-spin{width:32px;height:32px;border:3px solid #e8e8ee;border-top-color:var(--ink2);border-radius:50%;
+  animation:sp .7s linear infinite;margin:0 auto}
+
+/* ---------- 支付成功按钮 ---------- */
+.okbtns{display:flex;gap:12px;margin-top:8px;width:100%;padding:0 30px}
+.okb{flex:1;height:44px;border-radius:99px;font-size:14.5px;font-weight:600}
+.okb.back{background:#f4f4f7;color:var(--ink)}
+.okb.view{background:var(--paygreen);color:#fff}
+
+/* ---------- 物流通知卡片(首页) ---------- */
+.noticards{margin:8px 14px;display:flex;flex-direction:column;gap:8px}
+.noticard{background:var(--card);border-radius:12px;padding:14px;display:flex;gap:10px;align-items:center;
+  box-shadow:0 1px 2px rgba(0,0,0,.03)}
+.noticard .nc-icon{width:40px;height:40px;border-radius:50%;background:#f0f5ff;display:flex;
+  align-items:center;justify-content:center;font-size:18px;flex:none}
+.noticard .nc-body{flex:1;min-width:0}
+.noticard .nc-title{font-size:14px;font-weight:500}
+.noticard .nc-sub{font-size:12px;color:var(--ink2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.noticard .nc-arrow{color:var(--ink2);flex:none}

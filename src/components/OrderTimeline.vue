@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 import { timelineSteps } from '../domain/logistics.js';
-import { fmtTime } from '../domain/format.js';
+import { fmtRelative } from '../domain/format.js';
 
 const props = defineProps({
   order: { type: Object, required: true },
@@ -30,7 +30,7 @@ function cls(item) {
       <div class="dot"></div>
       <div>
         <div class="tt">{{ item.title }}<template v-if="now < item.t">（预计）</template></div>
-        <div class="ts">{{ fmtTime(item.t) }}<template v-if="now >= item.t"> · {{ item.desc }}</template></div>
+        <div class="ts">{{ fmtRelative(item.t, now) }}<template v-if="now >= item.t"> · {{ item.desc }}</template></div>
       </div>
     </div>
   </div>

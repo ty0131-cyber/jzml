@@ -1,9 +1,9 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { go, getOrder, markSaved, markWant, removeOrder } from '../store/useStore.js';
-import { stageOf, needsReview, reviewAt, STAGE_TXT } from '../domain/logistics.js';
+import { stageOf, needsReview, reviewAt, displayTime, STAGE_TXT } from '../domain/logistics.js';
 import { orderTotal } from '../domain/savings.js';
-import { money, fmtTime } from '../domain/format.js';
+import { money, fmtRelative } from '../domain/format.js';
 import { imageURL } from '../store/storage.js';
 import OrderTimeline from '../components/OrderTimeline.vue';
 
@@ -40,7 +40,7 @@ const bannerSub = computed(() => {
   if (stage.value !== 'signed') return '这是一单模拟消费,收货全程不花一分钱';
   if (order.value.verdict) return '这一单已复盘完成';
   if (now.value >= rAt.value) return '冷静期已到,做个决定吧';
-  return `冷静期至 ${fmtTime(rAt.value)},到时问你还想不想要`;
+  return `冷静期至 ${fmtRelative(rAt.value, now.value)},到时问你还想不想要`;
 });
 
 function onWant() {

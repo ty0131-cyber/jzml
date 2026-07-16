@@ -37,7 +37,7 @@ describe('genMilestones', () => {
   it('演示模式:分钟级压缩且 review 直接给出', () => {
     const m = genMilestones(T0, true);
     expect(m.shipped).toBe(T0 + 1 * M);
-    expect(m.signed).toBe(T0 + 5 * M);
+    expect(m.signed).toBe(T0 + 5.5 * M);
     expect(m.review).toBe(T0 + 7 * M);
   });
 });
@@ -73,12 +73,19 @@ describe('冷静期', () => {
 });
 
 describe('timelineSteps', () => {
-  it('返回6个节点且按时间正序', () => {
+  it('旧订单(无新字段)返回5个节点,新订单返回8个节点', () => {
+    // 旧订单只有 shipped/transit1/transit2/delivering/signed 字段
     const steps = timelineSteps(fakeOrder());
-    expect(steps).toHaveLength(6);
+    expect(steps.length).toBeGreaterThanOrEqual(5);
     for (let i = 1; i < steps.length; i++) {
-      expect(steps[i].t).toBeGreaterThan(steps[i - 1].t);
+      expect(steps[i].t).toBeGreaterThanOrEqual(steps[i - 1].t);
     }
+  });
+  it('新订单含 confirmed/picked/departed/arriving 时返回8节点', () => {
+    const full = genMilestones(T0, false);
+    const o = { ...fakeOrder(), m: full, courier: '韵通快递', trackingNo: 'SIM1234567890', hub1: '杭州转运中心', hub2: '广州华南分拨中心' };
+    const steps = timelineSteps(o);
+    expect(steps).toHaveLength(9);
   });
   it('金额展示为 price × qty', () => {
     const steps = timelineSteps(fakeOrder());

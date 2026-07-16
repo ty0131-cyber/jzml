@@ -5,7 +5,7 @@
 import { reactive } from 'vue';
 import { loadState, persist, putImage, delImage } from './storage.js';
 import { DEFAULT_SETTINGS } from './migrations.js';
-import { genMilestones, makeTrackingNo, pick, COURIERS, HUBS } from '../domain/logistics.js';
+import { genMilestones, makeTrackingNo, makeCourierStaff, pick, COURIERS, HUBS, STATIONS } from '../domain/logistics.js';
 import { orderTotal } from '../domain/savings.js';
 import { money } from '../domain/format.js';
 
@@ -63,6 +63,8 @@ export async function finalizeDraft(payMethod = '余额') {
     trackingNo: makeTrackingNo(),
     hub1: pick(HUBS),
     hub2: pick(HUBS),
+    station: pick(STATIONS),
+    courierStaff: makeCourierStaff(),
     shipFrom: d.shipFrom || '',
     payMethod,
     verdict: null

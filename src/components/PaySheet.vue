@@ -6,9 +6,9 @@ import { money } from '../domain/format.js';
 const props = defineProps({
   amount: { type: Number, required: true }
 });
-const emit = defineEmits(['success', 'close']);
+const emit = defineEmits(['success', 'home', 'close']);
 
-/* keypad | method | processing | success */
+/* keypad | method | processing | done */
 const phase = ref('keypad');
 const pin = ref('');
 const method = ref('余额');
@@ -25,9 +25,8 @@ function press(k) {
   if (pin.value.length === 6) {
     phase.value = 'processing';
     setTimeout(() => {
-      phase.value = 'success';
+      phase.value = 'done';
       if (navigator.vibrate) navigator.vibrate(30);
-      setTimeout(() => emit('success', method.value), 1500);
     }, 1300);
   }
 }
@@ -43,6 +42,7 @@ function chooseMethod(name) {
 <template>
   <div class="paymask">
     <div class="paysheet ap">
+      <!-- 密码键盘 -->
       <template v-if="phase === 'keypad'">
         <div class="ph">
           <button class="x" @click="emit('close')">✕</button>
@@ -62,9 +62,10 @@ function chooseMethod(name) {
           <button class="zero" @click="press('0')">0</button>
           <button @click="del">⌫</button>
         </div>
-        <div class="ap-sim">模拟支付,不会发生真实扣款</div>
+        <div class="ap-sim">模拟支付，不会发生真实扣款</div>
       </template>
 
+      <!-- 选择付款方式 -->
       <template v-else-if="phase === 'method'">
         <div class="ph">
           <button class="x" @click="phase = 'keypad'">‹</button>
@@ -77,20 +78,26 @@ function chooseMethod(name) {
             <i :class="{ sel: method === m.name }"></i>
           </button>
         </div>
-        <div class="ap-sim">展示用途;统一从虚拟余额扣减以便统计</div>
+        <div class="ap-sim">展示用途；统一从虚拟余额扣减以便统计</div>
       </template>
 
+      <!-- 处理中 -->
       <div v-else-if="phase === 'processing'" class="payload">
         <div class="spin ap-spin"></div>
         <div>正在付款…</div>
       </div>
 
+      <!-- 支付成功 -->
       <div v-else class="okwrap">
         <div class="okring ap-ok">
           <svg viewBox="0 0 40 40"><path d="M11 21 L18 28 L30 13" /></svg>
         </div>
         <div class="oktxt">支付成功</div>
-        <div class="okamt">{{ method }} ¥{{ money(amount) }}</div>
+        <div class="okamt">{{ method }} · ¥{{ money(amount) }}</div>
+        <div class="okbtns">
+          <button class="okb back" @click="emit('home', method)">回到首页</button>
+          <button class="okb view" @click="emit('success', method)">查看订单</button>
+        </div>
       </div>
     </div>
   </div>

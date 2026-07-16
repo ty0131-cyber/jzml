@@ -1,12 +1,13 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { store, go, finalizeDraft } from '../store/useStore.js';
+import { store, go, finalizeDraft, notify } from '../store/useStore.js';
 import { wouldOverdraw } from '../domain/wallet.js';
 import { money } from '../domain/format.js';
 import PaySheet from '../components/PaySheet.vue';
 
-const showPay = ref(false);
-const imgPreview = ref(null); // 只创建一次,onUnmounted 回收(修复 objectURL 泄漏)
+const phase = ref('confirm'); // confirm | opening | pay | paid
+
+const imgPreview = ref(null);
 
 onMounted(() => {
   if (!store.draft) {
@@ -28,13 +29,24 @@ function submit() {
     );
     if (!ok) return;
   }
-  showPay.value = true;
+  phase.value = 'opening';
+  setTimeout(() => { phase.value = 'pay'; }, 800);
 }
 
 async function onPaid(method) {
-  showPay.value = false;
   const order = await finalizeDraft(method);
-  if (order) go('detail', order.id);
+  if (order) {
+    notify('您的订单已付款，商家备货中');
+    go('detail', order.id);
+  }
+}
+
+async function onPayAndHome(method) {
+  const order = await finalizeDraft(method);
+  if (order) {
+    notify(`已支付 ¥${money(total.value)}(模拟) · 订单已创建`);
+    go('home');
+  }
 }
 </script>
 
@@ -77,11 +89,20 @@ async function onPaid(method) {
     </div>
 
     <div style="height:80px"></div>
-    <div class="paybar">
+    <div class="paybar" v-if="phase === 'confirm'">
       <span class="tot">合计 <b>¥{{ money(total) }}</b></span>
       <button @click="submit">提交订单</button>
     </div>
 
-    <PaySheet v-if="showPay" :amount="total" @success="onPaid" @close="showPay = false" />
+    <!-- 正在打开支付软件过渡 -->
+    <div v-if="phase === 'opening'" class="opening-mask">
+      <div class="opening-card">
+        <div class="opening-icon">💳</div>
+        <div class="opening-text">正在打开支付软件…</div>
+        <div class="opening-spin"></div>
+      </div>
+    </div>
+
+    <PaySheet v-if="phase === 'pay'" :amount="total" @success="onPaid" @home="onPayAndHome" @close="phase = 'confirm'" />
   </template>
 </template>
