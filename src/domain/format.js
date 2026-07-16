@@ -14,20 +14,8 @@ export function fmtTime(t) {
 }
 
 /**
- * 相对时间格式化:今天→"今天 15:30",明天→"明天 08:00",其他→"07-19 11:30"
- * @param {number} t 目标时间戳
- * @param {number} [now] 当前时间,默认 Date.now()
+ * 时间格式化:统一 MM-DD HH:mm,演示/真实模式都适用,无相对概念
  */
 export function fmtRelative(t, now = Date.now()) {
-  const d = new Date(t);
-  const today = new Date(now);
-  const p = (n) => String(n).padStart(2, '0');
-  const timeStr = `${p(d.getHours())}:${p(d.getMinutes())}`;
-
-  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
-  const tomorrowStart = todayStart + 86400000;
-
-  if (t >= todayStart && t < tomorrowStart) return `今天 ${timeStr}`;
-  if (t >= tomorrowStart && t < tomorrowStart + 86400000) return `明天 ${timeStr}`;
-  return `${d.getMonth() + 1}-${p(d.getDate())} ${timeStr}`;
+  return fmtTime(t);
 }
