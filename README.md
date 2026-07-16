@@ -26,6 +26,10 @@ npm run build      # 产物在 dist/
    - 输出目录: `dist`
 3. 之后每次 push 自动部署;每个分支有独立预览网址
 
+## 在线访问
+
+https://maile-ma.pages.dev
+
 ## 数据说明
 
 - 数据全存在浏览器本地,旧单文件版的数据(localStorage key `jzml_v1`)会被自动识别并继续使用
