@@ -5,9 +5,11 @@
  */
 import { cleanOCRText } from '../domain/parse.js';
 
+const MAX_DIM = 1800;
+
 /**
  * 识别图片,返回整段文本(已清理空格)。
- * 预处理:压缩大图提速并提升准确率。
+ * 预处理:灰度化 + 对比度增强 + 缩放,提升中文识别率。
  * @param {File|Blob} image
  * @param {(p:number)=>void} [onProgress] 0~1 进度回调
  */
@@ -23,23 +25,38 @@ export async function recognizeImage(image, onProgress) {
 }
 
 /**
- * 图片预处理:缩小过大图片,减少 OCR 计算量,同时滤除部分噪声。
- * 保持宽高比,最大边不超过 1500px。
+ * 图片预处理:灰度化 + 对比度拉伸 + 缩放。
+ * 彩色 UI 截图直接送 OCR 效果很差(尤其中文),先转灰度并拉伸对比度,
+ * 让文字与背景分离,再缩放到合理尺寸。
  */
 async function preprocessImage(file) {
-  const MAX = 1500;
   const bmp = await createImageBitmap(file);
-  if (bmp.width <= MAX && bmp.height <= MAX) return file;
+  const { width: w0, height: h0 } = bmp;
 
-  const scale = MAX / Math.max(bmp.width, bmp.height);
-  const w = Math.round(bmp.width * scale);
-  const h = Math.round(bmp.height * scale);
+  // 缩放:最大边不超过 MAX_DIM
+  const scale = Math.min(1, MAX_DIM / Math.max(w0, h0));
+  const w = Math.round(w0 * scale);
+  const h = Math.round(h0 * scale);
 
   const canvas = new OffscreenCanvas(w, h);
   const ctx = canvas.getContext('2d');
   ctx.drawImage(bmp, 0, 0, w, h);
   bmp.close();
 
-  const blob = await canvas.convertToBlob({ type: 'image/jpeg', quality: 0.85 });
-  return new File([blob], file.name || 'img.jpg', { type: 'image/jpeg' });
+  // 灰度化 + 对比度拉伸
+  const imageData = ctx.getImageData(0, 0, w, h);
+  const pixels = imageData.data;
+  for (let i = 0; i < pixels.length; i += 4) {
+    // 加权灰度:人眼对绿色最敏感
+    const gray = 0.299 * pixels[i] + 0.587 * pixels[i + 1] + 0.114 * pixels[i + 2];
+    // 对比度拉伸:以 128 为中点,暗的更暗、亮的更亮
+    const stretched = Math.round((gray - 128) * 1.8 + 128);
+    const clamped = Math.max(0, Math.min(255, stretched));
+    pixels[i] = pixels[i + 1] = pixels[i + 2] = clamped;
+    // alpha 不变
+  }
+  ctx.putImageData(imageData, 0, 0);
+
+  const blob = await canvas.convertToBlob({ type: 'image/png' });
+  return new File([blob], file.name || 'img.png', { type: 'image/png' });
 }

@@ -15,6 +15,8 @@ const imgPreview = ref(null); // objectURL
 
 const ocrState = ref('idle'); // idle | running | done | fail
 const ocrProgress = ref(0);
+const pasteText = ref('');
+const showPaste = ref(false);
 
 /* 若从确认页返回,恢复草稿 */
 onMounted(() => {
@@ -46,8 +48,32 @@ function onFile(e) {
   if (f) setImg(f);
 }
 function onPaste(e) {
-  const item = [...(e.clipboardData?.items || [])].find((i) => i.type.startsWith('image'));
-  if (item) setImg(item.getAsFile());
+  const items = [...(e.clipboardData?.items || [])];
+  const imgItem = items.find((i) => i.type.startsWith('image'));
+  if (imgItem) { setImg(imgItem.getAsFile()); return; }
+  // 没有图片时检查文本:如果用户从系统OCR复制了文字,粘贴即解析
+  const textItem = items.find((i) => i.type === 'text/plain');
+  if (textItem) {
+    textItem.getAsString((s) => {
+      pasteText.value = s;
+      showPaste.value = true;
+      applyPastedText(s);
+    });
+  }
+}
+
+/** 将粘贴/输入的OCR文本解析并预填字段 */
+function applyPastedText(text) {
+  if (!text || !text.trim()) return;
+  const r = parseProductText(text);
+  if (r.title && !name.value.trim()) name.value = r.title;
+  if (r.price != null && !String(price.value).trim()) price.value = r.price;
+  if (r.shipFrom && !shipFrom.value.trim()) shipFrom.value = r.shipFrom;
+  if (r.title || r.price != null) {
+    notify('已从粘贴文字中提取信息,请核对');
+  } else {
+    notify('未能从文字中识别出商品信息,请检查');
+  }
 }
 
 /* OCR 识别预填:只填当前为空的字段,不覆盖用户已填内容 */
@@ -115,6 +141,25 @@ function submit() {
     <template v-else-if="ocrState === 'done'">重新识别</template>
     <template v-else>🔍 识别截图,自动预填</template>
   </button>
+
+  <!-- 粘贴文字入口:系统OCR(如iPhone实况文本)识别率更高,可直接粘贴 -->
+  <div class="paste-area">
+    <button v-if="!showPaste" class="paste-toggle" @click="showPaste = true">
+      📋 或用系统OCR复制后粘贴文字
+    </button>
+    <template v-else>
+      <textarea
+        v-model="pasteText"
+        class="paste-input"
+        placeholder="在购物App截图→用系统OCR复制文字→贴在这里"
+        rows="4"
+      />
+      <div class="paste-actions">
+        <button class="paste-apply" @click="applyPastedText(pasteText)">解析文字</button>
+        <button class="paste-clear" @click="pasteText = ''; showPaste = false">收起</button>
+      </div>
+    </template>
+  </div>
 
   <div class="sheet">
     <div class="frow"><label>商品名称</label><input v-model="name" placeholder="必填,可由识别预填" /></div>

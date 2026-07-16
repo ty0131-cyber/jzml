@@ -245,6 +245,19 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--green);outline-
   background:#fff;border:1.5px solid var(--line);font-size:14px;color:var(--ink)}
 .ocrbtn:disabled{opacity:.55}
 
+/* 粘贴文字入口 */
+.paste-area{margin:0 14px}
+.paste-toggle{display:block;width:100%;height:34px;border-radius:8px;background:none;border:1px dashed var(--line);
+  font-size:13px;color:var(--ink2);cursor:pointer}
+.paste-input{width:100%;margin-top:4px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;
+  font-size:14px;resize:vertical;color:var(--ink);background:#fff;box-sizing:border-box}
+.paste-input:focus{outline:none;border-color:var(--ap)}
+.paste-actions{display:flex;gap:8px;margin-top:6px}
+.paste-apply{flex:1;height:36px;border-radius:99px;border:none;background:var(--ap,#1677ff);
+  color:#fff;font-size:14px;cursor:pointer}
+.paste-clear{height:36px;padding:0 14px;border-radius:99px;border:1px solid var(--line);
+  background:#fff;font-size:13px;color:var(--ink2);cursor:pointer}
+
 /* ---------- 支付宝风格支付浮层(形似不复制商标) ---------- */
 :root{--ap:#1677ff}
 .paysheet.ap .payamt{margin-top:22px}
