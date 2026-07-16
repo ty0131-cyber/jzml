@@ -1,0 +1,23 @@
+{
+  "name": "maile-ma",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "vue": "^3.4.21",
+    "tesseract.js": "^5.1.0",
+    "vconsole": "^3.15.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.4",
+    "vite": "^5.2.0",
+    "vitest": "^1.4.0"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "买了吗",
+  "short_name": "买了吗",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f6f6f8",
+  "theme_color": "#ff4432",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
