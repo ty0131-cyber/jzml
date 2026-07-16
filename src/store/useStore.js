@@ -5,7 +5,7 @@
 import { reactive } from 'vue';
 import { loadState, persist, putImage, delImage } from './storage.js';
 import { DEFAULT_SETTINGS } from './migrations.js';
-import { genMilestones, makeTrackingNo, makeCourierStaff, pick, COURIERS, HUBS, STATIONS } from '../domain/logistics.js';
+import { genMilestones, makeTrackingNo, makeCourierStaff, pick, COURIERS, HUBS, STATIONS, nearestHub } from '../domain/logistics.js';
 import { orderTotal } from '../domain/savings.js';
 import { money } from '../domain/format.js';
 
@@ -61,11 +61,12 @@ export async function finalizeDraft(payMethod = '余额') {
     m: genMilestones(t0, store.settings.demo),
     courier: pick(COURIERS),
     trackingNo: makeTrackingNo(),
-    hub1: pick(HUBS),
-    hub2: pick(HUBS),
+    hub1: d.shipFrom ? nearestHub(d.shipFrom) : pick(HUBS),
+    hub2: nearestHub(store.settings.addr),
     station: pick(STATIONS),
     courierStaff: makeCourierStaff(),
     shipFrom: d.shipFrom || '',
+    destAddr: store.settings.addr || '',
     payMethod,
     verdict: null
   };
